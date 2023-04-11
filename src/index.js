@@ -10,7 +10,7 @@ const imagesBox = document.querySelector('.gallery');
 const renderImages = images => {
   const { webformatURL, tags, likes, views, comments, downloads } = images;
   return `<div class="photo-card">
-   <a> <img src="${webformatURL}" alt="${tags}" loading="lazy" /></a>
+   <a href="${webformatURL}"> <img class="render-img" src="${webformatURL}" alt="${tags}" loading="lazy" /></a>
     <div class="info">
     <p class="info-item">
       <b>Likes</b> ${likes}
@@ -27,57 +27,45 @@ const renderImages = images => {
   </div>
 </div>`;
 };
-const searchImages = e => {
+const searchImages = async e => {
   e.preventDefault();
   const q = input.value.trim();
-  fetchImages(q)
-    .then(response => {
-      const images = response.data.hits;
-      const imageCount = response.data.totalHits;
-      console.log(imageCount);
-      imagesBox.innerHTML = '';
-      images.forEach(image => {
-        imagesBox.insertAdjacentHTML('beforeend', renderImages(image));
-      });
-      if (q && imageCount > 0) {
-        Notify.success(`Hurray! We found ${imageCount}`);
-        return;
-      } else
-        Notify.failure(
-          'Sorry, there are no images matching your query. Please try again.'
-        );
-
-      imagesBox.innerHTML = '';
-    })
-    .catch(error => {
+  try {
+    const response = await fetchImages(q);
+    const images = response.data.hits;
+    const imageCount = response.data.totalHits;
+    console.log(imageCount);
+    imagesBox.innerHTML = '';
+    images.forEach(image => {
+      imagesBox.insertAdjacentHTML('beforeend', renderImages(image));
+    });
+    if (q && imageCount > 0) {
+      Notify.success(`Hurray! We found ${imageCount}`);
+      return;
+    } else
       Notify.failure(
         'Sorry, there are no images matching your query. Please try again.'
       );
-    });
-};
 
+    imagesBox.innerHTML = '';
+  } catch (error) {
+    Notify.failure(
+      'Sorry, there are no images matching your query. Please try again.'
+    );
+  }
+};
 function pictureClickHandler(e) {
   e.preventDefault();
   if (e.target.nodeName !== 'IMG') {
     return;
   }
-  const instance = basicLightbox.create(
-    `
-         <img width="1400" height="900" src="${e.target.src}">
-`,
-    {
-      onClose: instance => {
-        document.removeEventListener('keydown', pressedEscKeyHandler);
-      },
-    }
-  );
-  instance.show();
-  document.addEventListener('keydown', pressedEscKeyHandler);
-  function pressedEscKeyHandler(e) {
-    if (e.code === 'Escape') {
-      instance.close();
-    }
-  }
+
+  const ligthBoxGallery = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
+  ligthBoxGallery.open({ source: e.target.src });
 }
+
 form.addEventListener('submit', searchImages);
 imagesBox.addEventListener('click', pictureClickHandler);
