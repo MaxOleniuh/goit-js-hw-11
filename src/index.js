@@ -6,6 +6,7 @@ import fetchImages from './fetch.js';
 const input = document.querySelector('input');
 const form = document.querySelector('form#search-form');
 const imagesBox = document.querySelector('.gallery');
+const loadMore = document.querySelector('.load-more');
 
 const renderImages = images => {
   const { webformatURL, tags, likes, views, comments, downloads } = images;
@@ -27,6 +28,7 @@ const renderImages = images => {
   </div>
 </div>`;
 };
+
 const searchImages = async e => {
   e.preventDefault();
   const q = input.value.trim();
@@ -56,13 +58,12 @@ const searchImages = async e => {
     );
   }
 };
+
 function pictureClickHandler(e) {
   e.preventDefault();
   if (e.target.nodeName !== 'IMG') {
     return;
   }
-
-  //   ligthBoxGallery.open({ source: e.target.src });
 }
 
 form.addEventListener('submit', searchImages);
