@@ -38,7 +38,9 @@ const searchImages = async e => {
     imagesBox.innerHTML = '';
     images.forEach(image => {
       imagesBox.insertAdjacentHTML('beforeend', renderImages(image));
+      ligthBoxGallery.refresh();
     });
+
     if (q && imageCount > 0) {
       Notify.success(`Hurray! We found ${imageCount}`);
       return;
@@ -60,12 +62,13 @@ function pictureClickHandler(e) {
     return;
   }
 
-  const ligthBoxGallery = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-  });
-  ligthBoxGallery.open({ source: e.target.src });
+  //   ligthBoxGallery.open({ source: e.target.src });
 }
 
 form.addEventListener('submit', searchImages);
 imagesBox.addEventListener('click', pictureClickHandler);
+
+const ligthBoxGallery = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});

@@ -9,7 +9,6 @@ form {
   height: 50px;
   padding: 5px;
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
-  position: fixed;
   width: 100%;
   z-index: 2;
 }
@@ -19,6 +18,7 @@ input {
   padding-inline: 10px;
 }
 .gallery {
+  margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
@@ -35,18 +35,14 @@ input {
 .info {
   display: flex;
   gap: 10px;
-  justify-content: center;
 }
 
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  max-height: 50px;
+.info-item {  
+  text-align: center;
 }
 
 .render-img {
   width: 360px;
-  max-height: 250px;
+  height: 250px;
 }
 
