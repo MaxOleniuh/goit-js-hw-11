@@ -13,7 +13,7 @@ const renderImages = images => {
   return `<div class="photo-card">
    <a href="${webformatURL}"> <img class="render-img" src="${webformatURL}" alt="${tags}" loading="lazy" /></a>
     <div class="info">
-    <p class="info-item">
+    <p class="info-item"> 
       <b>Likes</b> ${likes}
     </p>
     <p class="info-item">
@@ -73,3 +73,26 @@ const ligthBoxGallery = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
+let page = 1;
+const onLoadMoreBtnClick = async e => {
+  page += 1;
+  console.log(page);
+  const q = input.value.trim();
+  try {
+    const response = await fetchImages(q, page);
+    const images = response.data.hits;
+    const imageCount = response.data.totalHits;
+    console.log(imageCount);
+    images.forEach(image => {
+      imagesBox.insertAdjacentHTML('beforeend', renderImages(image));
+      ligthBoxGallery.refresh();
+      if (page === imageCount / 40) {
+        loadMore.disabled = true;
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+loadMore.addEventListener('click', onLoadMoreBtnClick);
