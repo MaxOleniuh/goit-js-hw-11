@@ -42,7 +42,15 @@ const searchImages = async e => {
       imagesBox.insertAdjacentHTML('beforeend', renderImages(image));
       ligthBoxGallery.refresh();
     });
-
+    if (!q) {
+      loadMore.classList.add('is-hidden');
+    }
+    if (imageCount > 40 && q) {
+      loadMore.classList.remove('is-hidden');
+    }
+    if (imageCount < 40 && q) {
+      loadMore.classList.add('is-hidden');
+    }
     if (q && imageCount > 0) {
       Notify.success(`Hurray! We found ${imageCount}`);
       return;
@@ -73,8 +81,10 @@ const ligthBoxGallery = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
+
 let page = 1;
 const onLoadMoreBtnClick = async e => {
+  loadMore.classList.remove('is-hidden');
   page += 1;
   console.log(page);
   const q = input.value.trim();
@@ -86,10 +96,13 @@ const onLoadMoreBtnClick = async e => {
     images.forEach(image => {
       imagesBox.insertAdjacentHTML('beforeend', renderImages(image));
       ligthBoxGallery.refresh();
-      if (page === imageCount / 40) {
-        loadMore.disabled = true;
-      }
     });
+    if (page === Math.ceil(imageCount / 40)) {
+      Notify.failure(
+        "We're sorry, but you've reached the end of search results."
+      );
+      loadMore.classList.add('is-hidden');
+    }
   } catch (error) {
     console.log(error);
   }
